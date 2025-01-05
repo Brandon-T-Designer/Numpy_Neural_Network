@@ -1,0 +1,764 @@
+<html>
+<head>
+<title>Mini_Project_#2.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #0033b3;}
+.s1 { color: #080808;}
+.s2 { color: #8c8c8c; font-style: italic;}
+.s3 { color: #1750eb;}
+.s4 { color: #067d17;}
+.s5 { color: #0037a6;}
+</style>
+</head>
+<body bgcolor="#ffffff">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#c0c0c0" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Mini_Project_#2.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">numpy </span><span class="s0">as </span><span class="s1">np</span>
+<span class="s0">import </span><span class="s1">pandas</span>
+<span class="s0">import </span><span class="s1">matplotlib.pyplot </span><span class="s0">as </span><span class="s1">plt</span>
+<span class="s0">import </span><span class="s1">pickle</span>
+<span class="s0">import </span><span class="s1">sys</span>
+<span class="s0">import </span><span class="s1">numpy</span>
+<span class="s0">from </span><span class="s1">numpy.matlib </span><span class="s0">import </span><span class="s1">zeros</span>
+<span class="s1">numpy.set_printoptions(threshold=sys.maxsize)</span>
+<span class="s0">import </span><span class="s1">os</span>
+
+<span class="s2"># Compute the tanh function, given a 3x1 input x</span>
+<span class="s0">def </span><span class="s1">theta(x):</span>
+    <span class="s2"># computes the theta values for an input vector x</span>
+    <span class="s0">return </span><span class="s1">(numpy.exp(x) - numpy.exp(-x)) / (numpy.exp(x) + numpy.exp(-x))</span>
+
+<span class="s2"># Compute the 3x1 Derivative of the tanh function, given a 3x1 input x</span>
+<span class="s0">def </span><span class="s1">derivative_theta(x):</span>
+    <span class="s0">return </span><span class="s1">(</span><span class="s3">1 </span><span class="s1">- (theta(x)**</span><span class="s3">2</span><span class="s1">))</span>
+
+<span class="s2"># Compute the scalar f_w for a given 3x1 vector x and a 16x1 vector w</span>
+<span class="s0">def </span><span class="s1">f_w(x, w):</span>
+    <span class="s2"># Compute Theta Values</span>
+    <span class="s1">Theta_1 = theta(w[</span><span class="s3">2 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * x[</span><span class="s3">1 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] + w[</span><span class="s3">3 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * x[</span><span class="s3">2 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] + w[</span><span class="s3">4 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * x[</span><span class="s3">3 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] + w[</span><span class="s3">5 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">])</span>
+    <span class="s1">Theta_2 = theta(w[</span><span class="s3">7 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * x[</span><span class="s3">1 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] + w[</span><span class="s3">8 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * x[</span><span class="s3">2 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] + w[</span><span class="s3">9 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * x[</span><span class="s3">3 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] + w[</span><span class="s3">10 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">])</span>
+    <span class="s1">Theta_3 = theta(w[</span><span class="s3">12 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * x[</span><span class="s3">1 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] + w[</span><span class="s3">13 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * x[</span><span class="s3">2 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] + w[</span><span class="s3">14 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * x[</span><span class="s3">3 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] + w[</span><span class="s3">15 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">])</span>
+
+    <span class="s2"># Compute f_w</span>
+    <span class="s1">f_w = w[</span><span class="s3">1 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * Theta_1 + w[</span><span class="s3">6 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * Theta_2 + w[</span><span class="s3">11 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">] * Theta_3 + w[</span><span class="s3">16 </span><span class="s1">- </span><span class="s3">1</span><span class="s1">]</span>
+
+    <span class="s0">return </span><span class="s1">f_w</span>
+
+<span class="s2"># Computes the 16x1 Gradient vector of theta, given a 16x1 w vector and a 3x1 x input</span>
+<span class="s0">def </span><span class="s1">Gradient(w, x):</span>
+    <span class="s2"># Ensure w and x are NumPy arrays</span>
+    <span class="s1">w = np.asarray(w).reshape(-</span><span class="s3">1</span><span class="s1">, </span><span class="s3">1</span><span class="s1">)</span>
+    <span class="s1">x = np.asarray(x).reshape(-</span><span class="s3">1</span><span class="s1">, </span><span class="s3">1</span><span class="s1">)</span>
+
+    <span class="s2"># Create the Gradient vector</span>
+    <span class="s1">Grad_size = w.shape[</span><span class="s3">0</span><span class="s1">]</span>
+    <span class="s1">Gradient_theta = np.zeros((Grad_size, </span><span class="s3">1</span><span class="s1">))</span>
+
+    <span class="s2"># Construct Vectors a_i and b_i</span>
+    <span class="s1">a = np.array([w[</span><span class="s3">0</span><span class="s1">][</span><span class="s3">0</span><span class="s1">], w[</span><span class="s3">5</span><span class="s1">][</span><span class="s3">0</span><span class="s1">], w[</span><span class="s3">10</span><span class="s1">][</span><span class="s3">0</span><span class="s1">]]).reshape(</span><span class="s3">1</span><span class="s1">, </span><span class="s3">3</span><span class="s1">)</span>
+    <span class="s1">b = np.array([w[</span><span class="s3">4</span><span class="s1">][</span><span class="s3">0</span><span class="s1">], w[</span><span class="s3">9</span><span class="s1">][</span><span class="s3">0</span><span class="s1">], w[</span><span class="s3">14</span><span class="s1">][</span><span class="s3">0</span><span class="s1">]]).reshape(</span><span class="s3">1</span><span class="s1">, </span><span class="s3">3</span><span class="s1">)</span>
+
+    <span class="s0">for </span><span class="s1">m </span><span class="s0">in </span><span class="s1">range(</span><span class="s3">0</span><span class="s1">, Grad_size):</span>
+
+        <span class="s2"># Find the current alpha value</span>
+        <span class="s1">i = </span><span class="s3">0</span>
+        <span class="s0">if </span><span class="s1">(</span><span class="s3">1 </span><span class="s1">&lt;= m &lt;= </span><span class="s3">4</span><span class="s1">):</span>
+            <span class="s1">i = </span><span class="s3">0</span>
+        <span class="s0">elif </span><span class="s1">(</span><span class="s3">6 </span><span class="s1">&lt;= m &lt;= </span><span class="s3">9</span><span class="s1">):</span>
+            <span class="s1">i = </span><span class="s3">1</span>
+        <span class="s0">elif </span><span class="s1">(</span><span class="s3">11 </span><span class="s1">&lt;= m &lt;= </span><span class="s3">14</span><span class="s1">):</span>
+            <span class="s1">i = </span><span class="s3">2</span>
+
+        <span class="s2"># Find x[j]</span>
+        <span class="s1">j = </span><span class="s3">0</span>
+        <span class="s0">if </span><span class="s1">((m == </span><span class="s3">1</span><span class="s1">) </span><span class="s0">or </span><span class="s1">(m == </span><span class="s3">6</span><span class="s1">) </span><span class="s0">or </span><span class="s1">(m == </span><span class="s3">11</span><span class="s1">)):</span>
+            <span class="s1">j = </span><span class="s3">0</span>
+        <span class="s0">elif </span><span class="s1">((m == </span><span class="s3">2</span><span class="s1">) </span><span class="s0">or </span><span class="s1">(m == </span><span class="s3">7</span><span class="s1">) </span><span class="s0">or </span><span class="s1">(m == </span><span class="s3">12</span><span class="s1">)):</span>
+            <span class="s1">j = </span><span class="s3">1</span>
+        <span class="s0">elif </span><span class="s1">((m == </span><span class="s3">3</span><span class="s1">) </span><span class="s0">or </span><span class="s1">(m == </span><span class="s3">8</span><span class="s1">) </span><span class="s0">or </span><span class="s1">(m == </span><span class="s3">13</span><span class="s1">)):</span>
+            <span class="s1">j = </span><span class="s3">2</span>
+
+        <span class="s2"># Compute the Gradient</span>
+
+        <span class="s2"># w_m = a_i</span>
+        <span class="s0">if </span><span class="s1">((m == </span><span class="s3">0</span><span class="s1">) </span><span class="s0">or </span><span class="s1">(m == </span><span class="s3">5</span><span class="s1">) </span><span class="s0">or </span><span class="s1">(m == </span><span class="s3">10</span><span class="s1">)):</span>
+            <span class="s1">Gradient_theta[m, </span><span class="s3">0</span><span class="s1">] = theta((a @ x).item() + (b[i, </span><span class="s3">0</span><span class="s1">]))</span>
+
+        <span class="s2"># w_m = B</span>
+        <span class="s0">elif </span><span class="s1">(m == </span><span class="s3">15</span><span class="s1">):</span>
+            <span class="s1">Gradient_theta[m, </span><span class="s3">0</span><span class="s1">] = </span><span class="s3">1</span>
+
+        <span class="s0">else</span><span class="s1">:</span>
+
+            <span class="s2"># W[m] = b_i</span>
+            <span class="s0">if </span><span class="s1">((m == </span><span class="s3">4</span><span class="s1">)):</span>
+                <span class="s1">Gradient_theta[m, </span><span class="s3">0</span><span class="s1">] = (a[</span><span class="s3">0</span><span class="s1">, i]) * derivative_theta((a @ x).item() + (b[</span><span class="s3">0</span><span class="s1">, i]))</span>
+
+            <span class="s0">elif </span><span class="s1">((m == </span><span class="s3">9</span><span class="s1">)):</span>
+                <span class="s1">Gradient_theta[m, </span><span class="s3">0</span><span class="s1">] = (a[</span><span class="s3">0</span><span class="s1">, i]) * derivative_theta((a @ x).item() + (b[</span><span class="s3">0</span><span class="s1">, i]))</span>
+
+            <span class="s0">elif </span><span class="s1">((m == </span><span class="s3">14</span><span class="s1">)):</span>
+                <span class="s1">Gradient_theta[m, </span><span class="s3">0</span><span class="s1">] = (a[</span><span class="s3">0</span><span class="s1">, i]) * derivative_theta((a @ x).item() + (b[</span><span class="s3">0</span><span class="s1">, i]))</span>
+
+            <span class="s2"># W[m] is none of the above, and thus one of a_i_j</span>
+            <span class="s0">else</span><span class="s1">:</span>
+                <span class="s1">Gradient_theta[m, </span><span class="s3">0</span><span class="s1">] = (a[</span><span class="s3">0</span><span class="s1">, i]) * derivative_theta((a @ x).item() + (b[</span><span class="s3">0</span><span class="s1">, i])) * (x[j, </span><span class="s3">0</span><span class="s1">])</span>
+
+    <span class="s0">return </span><span class="s1">Gradient_theta</span>
+
+<span class="s2"># Computes the Nx16 Dr(w) matrix for a given 3xN X input,and a 3x1 w,</span>
+<span class="s0">def </span><span class="s1">Jacobian(x_full, w):</span>
+    <span class="s1">Dr_w = np.zeros((x_full.shape[</span><span class="s3">1</span><span class="s1">], w.shape[</span><span class="s3">0</span><span class="s1">]))</span>
+
+    <span class="s2">#print(&quot;w:\n&quot;, w.shape[0],w.shape[1])</span>
+    <span class="s2">#print(&quot;x_full\n&quot;,x_full.shape[0],x_full.shape[1])</span>
+    <span class="s2">#print(&quot;Dr_w:\n&quot;,Dr_w)</span>
+
+    <span class="s0">for </span><span class="s1">j </span><span class="s0">in </span><span class="s1">range(</span><span class="s3">0</span><span class="s1">, x_full.shape[</span><span class="s3">1</span><span class="s1">]):</span>
+        <span class="s1">Grad = Gradient(w, x_full[:, j]).transpose()</span>
+        <span class="s1">Dr_w[j, :] = Grad</span>
+    <span class="s0">return </span><span class="s1">Dr_w</span>
+
+<span class="s2"># Computes Nx1 r_w vector, given a 16x1 w vector a 3xN X input, and a Nx1 y input</span>
+<span class="s0">def </span><span class="s1">r_w(x_full, y, w):</span>
+    <span class="s1">N = y.shape[</span><span class="s3">0</span><span class="s1">]</span>
+    <span class="s1">r_w = np.zeros((N, </span><span class="s3">1</span><span class="s1">))</span>
+
+    <span class="s2">#Old Diagnostic Prints</span>
+    <span class="s4">&quot;&quot;&quot;  
+    print(&quot;x_full</span><span class="s5">\n</span><span class="s4">&quot;, x_full) 
+    print(end = &quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+  
+    print(&quot;y</span><span class="s5">\n</span><span class="s4">&quot;, y) 
+    print(end = &quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+  
+    print(&quot;r_w</span><span class="s5">\n</span><span class="s4">&quot;, r_w) 
+    print(end = &quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+    &quot;&quot;&quot;</span>
+
+    <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(</span><span class="s3">0</span><span class="s1">, N):</span>
+        <span class="s1">r_w[i, </span><span class="s3">0</span><span class="s1">] = (f_w(x_full[:, i], w) - y[i]).item()</span>
+
+    <span class="s0">return </span><span class="s1">r_w</span>
+
+<span class="s2"># Computes the loss function scalar l_w given a 3xN X input matrix, a Nx1 y value, a 16x1 w input, and a scalar lambda lam</span>
+<span class="s0">def </span><span class="s1">l_w(x_full, y, w, lam):</span>
+    <span class="s1">R = r_w(x_full, y, w)</span>
+    <span class="s1">R_squared = R.T@R</span>
+
+    <span class="s1">l_w = R_squared + lam*(w.T@w)</span>
+
+    <span class="s0">return </span><span class="s1">l_w.item()</span>
+
+<span class="s2"># Compute the RMSE Error using a Nx1 testing vector y _actual, a 3xN X input matrix, and a 16x1 weights vector</span>
+<span class="s0">def </span><span class="s1">RMSE(y_actual, x_full, w):</span>
+
+    <span class="s2">#Create y_predicted Vector</span>
+    <span class="s1">N = x_full.shape[</span><span class="s3">1</span><span class="s1">]</span>
+    <span class="s1">y_predicted = np.zeros((N, </span><span class="s3">1</span><span class="s1">))</span>
+
+    <span class="s2">#fill out values in y_predicted</span>
+    <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range(</span><span class="s3">0</span><span class="s1">, N):</span>
+        <span class="s1">y_predicted[i, </span><span class="s3">0</span><span class="s1">] = (f_w(x_full[:, i], w)).item()</span>
+
+    <span class="s2">#Compute RMSE</span>
+    <span class="s1">y_error = y_actual - y_predicted</span>
+    <span class="s1">RMSE = np.sqrt((y_error.T@y_error)/(y_error.shape[</span><span class="s3">0</span><span class="s1">]))</span>
+
+    <span class="s0">return </span><span class="s1">RMSE.item()</span>
+
+<span class="s2">#(w.shape[0] = 16) Compute the Current (N+16)x1 h(w) vector given a 3xN X input matrix, a Nx1 y input vector, a 16x1 w vector, and a lambda lam</span>
+<span class="s0">def </span><span class="s1">Find_h_w(x_full, y, w, lam):</span>
+
+    <span class="s2"># Find Dh_w</span>
+    <span class="s1">Dr_w = Jacobian(x_full, w)</span>
+    <span class="s1">lam_identity = (np.sqrt(lam)) * np.identity(Dr_w.shape[</span><span class="s3">1</span><span class="s1">])</span>
+    <span class="s1">Dh_w = np.vstack((Dr_w, lam_identity))</span>
+    <span class="s2"># print(&quot;Dh_w\n&quot;,Dh_w, Dh_w.shape[0])</span>
+
+    <span class="s2"># Find b Vector</span>
+    <span class="s1">b_top = r_w(x_full, y, w)</span>
+    <span class="s1">b_bottom = np.zeros((w.shape[</span><span class="s3">0</span><span class="s1">], </span><span class="s3">1</span><span class="s1">))</span>
+    <span class="s1">b = np.vstack((b_top, b_bottom))</span>
+    <span class="s1">h_w = (Dh_w @ w) + b</span>
+
+    <span class="s2"># print(&quot;h_w\n&quot;, h_w)</span>
+    <span class="s0">return </span><span class="s1">h_w</span>
+
+<span class="s2"># Computes w_(t+1) given a 3xN X input matrix, a Nx1 y input vector, a 16x1 weights vector, a scalar lambda lam, and a scalar step size gamma</span>
+<span class="s0">def </span><span class="s1">Find_next_weight_vector(x_full, y, current_weights, lam, gamma):</span>
+    <span class="s2"># Find Dh_w</span>
+    <span class="s1">Dr_w = Jacobian(x_full, current_weights)</span>
+    <span class="s1">lam_identity = (np.sqrt(lam)) * np.identity(Dr_w.shape[</span><span class="s3">1</span><span class="s1">])</span>
+    <span class="s1">Dh_w = np.vstack((Dr_w, lam_identity))</span>
+
+    <span class="s2"># Create gamma I</span>
+    <span class="s1">gamma_identity = (np.sqrt(gamma)) * np.identity(Dh_w.shape[</span><span class="s3">1</span><span class="s1">])</span>
+
+    <span class="s2"># Create A</span>
+    <span class="s1">A = np.vstack((Dh_w, gamma_identity))</span>
+    <span class="s2"># print(&quot;A\n&quot;, A.shape[0], A.shape[1] )</span>
+
+    <span class="s2"># Find b Vector</span>
+    <span class="s1">b_top = r_w(x_full, y, current_weights)</span>
+    <span class="s1">b_bottom = np.zeros((</span><span class="s3">16</span><span class="s1">, </span><span class="s3">1</span><span class="s1">))</span>
+    <span class="s1">b = np.vstack((b_top, b_bottom))</span>
+
+    <span class="s2"># Create Stacked Weights vector</span>
+    <span class="s1">z = np.vstack((-b, (np.sqrt(gamma)) * current_weights))</span>
+    <span class="s2"># print(&quot;z\n&quot;, z.shape[0],z.shape[1])</span>
+
+    <span class="s2"># Compute the next set of weights</span>
+    <span class="s1">w_next = ((np.linalg.pinv(A.T @ A)) @ A.T) @ z</span>
+
+    <span class="s2">#Diagnostic Print</span>
+    <span class="s4">&quot;&quot;&quot;&quot; 
+    print(&quot;z</span><span class="s5">\n</span><span class="s4">&quot;, z) 
+    print(&quot;A</span><span class="s5">\n</span><span class="s4">&quot;, A) 
+    print(&quot;w_next</span><span class="s5">\n</span><span class="s4">&quot;, w_next) 
+    &quot;&quot;&quot;</span>
+
+    <span class="s0">return </span><span class="s1">w_next</span>
+
+<span class="s2"># Computes (1xi Iteration_Indices_Vector, 1xi Loss_Values_Vector, 16x1 trained weights vector) given a 3xN x input vector, a Nx1 y input vector, a 16x1 weights vector, a scalar lambda lam, and a scalar Gamma</span>
+<span class="s0">def </span><span class="s1">Compute_Levenberg_Marquardt_Data(x_full, y, start_weights, lam, gamma, stop_threshold, stop_i):</span>
+
+    <span class="s2"># Initalize Data Vectors for Graphing</span>
+    <span class="s1">Iteration_Indices_Vector = []</span>
+    <span class="s1">Loss_Values_Vector = []</span>
+
+    <span class="s2">#Initalize Weights and Gamma</span>
+    <span class="s1">current_weights = start_weights</span>
+    <span class="s1">current_gamma = gamma</span>
+
+    <span class="s2">#Set up Initial Loop Conditions</span>
+    <span class="s1">i = </span><span class="s3">0</span>
+    <span class="s1">trigger = </span><span class="s0">True</span>
+    <span class="s1">Smallest_Mag_Squared_h_w = np.dot((Find_h_w(x_full, y, current_weights, lam)).T,(Find_h_w(x_full, y, current_weights, lam)))</span>
+    <span class="s0">while </span><span class="s1">((i &lt; stop_i) </span><span class="s0">and </span><span class="s1">trigger):</span>
+
+        <span class="s2">#Compute Loss Function based on the current set of weights</span>
+        <span class="s1">current_loss = l_w(x_full, y, current_weights, lam)</span>
+
+        <span class="s2">#Append my data vectors(for graphing) with the necessary Data</span>
+        <span class="s1">Iteration_Indices_Vector = np.append(Iteration_Indices_Vector, (i+</span><span class="s3">1</span><span class="s1">))</span>
+        <span class="s1">Loss_Values_Vector = np.append(Loss_Values_Vector, current_loss)</span>
+
+
+
+        <span class="s2"># Find the Outputs when given the current set of weights</span>
+        <span class="s1">h_w_t = Find_h_w(x_full, y, current_weights, lam)</span>
+
+        <span class="s2"># Find the new output when given the updated set of weights</span>
+        <span class="s1">next_weights = Find_next_weight_vector(x_full, y, current_weights, lam, current_gamma)</span>
+        <span class="s1">h_w_t_plus_1 = Find_h_w(x_full, y, next_weights, current_gamma)</span>
+
+        <span class="s2"># Update Weights by comparing old vs new Magnitudes</span>
+        <span class="s1">Mag_Squared_h_w_t = np.dot(h_w_t.T, h_w_t).item()</span>
+        <span class="s1">Mag_Squared_h_w_t_plus_1 = np.dot(h_w_t_plus_1.T, h_w_t_plus_1).item()</span>
+
+        <span class="s0">if </span><span class="s1">(Mag_Squared_h_w_t_plus_1 &lt; Mag_Squared_h_w_t):</span>
+
+            <span class="s2"># Update Weights</span>
+            <span class="s1">current_weights = next_weights</span>
+
+            <span class="s2"># Update Lambda</span>
+            <span class="s1">current_gamma = </span><span class="s3">0.8 </span><span class="s1">* current_gamma</span>
+
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s2"># Update Lambda</span>
+            <span class="s1">current_gamma = </span><span class="s3">2 </span><span class="s1">* current_gamma</span>
+
+        <span class="s2">#Print the Data about the Current Iteration</span>
+        <span class="s2">#print(f&quot;Loss is: {loss}, Mag_Squared_h_w_t_plus_1: {Mag_Squared_h_w_t_plus_1}, iteration: {i}&quot;, end=&quot;\n&quot;)</span>
+
+        <span class="s2"># Stopping Criteria</span>
+        <span class="s2">#This module will stop the algorithm if the Magnitude of the residual grows beyond a reasonable limit (Which tends to happen for some reason)</span>
+
+        <span class="s2">#Update the Smallest Recorded h_w_squared value</span>
+        <span class="s0">if </span><span class="s1">( Mag_Squared_h_w_t_plus_1 &lt; Smallest_Mag_Squared_h_w):</span>
+            <span class="s1">Smallest_Mag_Squared_h_w = Mag_Squared_h_w_t_plus_1</span>
+
+        <span class="s2"># Check if the updated h_w_squared is bigger than the smallest recorded h_w_squared value times stop_threshold</span>
+        <span class="s0">elif </span><span class="s1">(Mag_Squared_h_w_t_plus_1 &gt; (stop_threshold*Smallest_Mag_Squared_h_w)):</span>
+            <span class="s1">trigger = </span><span class="s0">False</span>
+
+            <span class="s2">#Diagnostic Print</span>
+            <span class="s4">&quot;&quot;&quot; 
+            print(f&quot;     Stopped at iteration #{i+1}&quot;, end=&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(f&quot;     Stop Condition: h_w_t_plus_1 has runaway growth: &quot;, end =&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(&quot;     Final Model Training Loss Error is:&quot;, current_loss, end=&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(&quot;     Smallest residual found is:&quot;,Smallest_Mag_Squared_h_w, end =&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(&quot;     Final residual found is:&quot;, Mag_Squared_h_w_t_plus_1, end =&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(end = &quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            &quot;&quot;&quot;</span>
+
+        <span class="s2">#Obslete Stopping Criteria (reliant on manual setting of a stop_threshold where (h_w_t_plus_1 &lt; stop_threshold))</span>
+        <span class="s4">&quot;&quot;&quot; 
+        # Small h(w) stop Magnitude 
+        if (Mag_Squared_h_w_t_plus_1 &lt;= stop_threshold): 
+            trigger = False     
+             
+            #Diagnostic Prints 
+            print(f&quot;     Stopped at iteration #{i+1}&quot;, end=&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(f&quot;    Stop Condition: h_w_t_plus_1 is below the threshold: &quot;, end =&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(&quot;     Final Model Training Loss Error is:&quot;, current_loss, end=&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            #print(&quot;     Smallest h(w) found is:&quot;,Smallest_Mag_Squared_h_w, end =&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            #print(&quot;     Final h(w) found is:&quot;, Mag_Squared_h_w_t_plus_1, end =&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(end = &quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+        &quot;&quot;&quot;</span>
+
+        <span class="s2"># Iterator to stop my search algorithm if it drags on for too long</span>
+        <span class="s1">i = i + </span><span class="s3">1</span>
+
+        <span class="s2">#Diagnostic print function</span>
+        <span class="s4">&quot;&quot;&quot; 
+        if (i == stop_i): 
+ 
+             
+             
+            print(f&quot;     Stopped at iteration #{i+1}&quot;, end=&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(f&quot;    Stop Condition: i = stop_i: i = {stop_i}&quot;, end=&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(&quot;     Final Model Training Loss Error is:&quot;, current_loss, end=&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(&quot;     Smallest h(w) found is:&quot;,Smallest_Mag_Squared_h_w, end =&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(&quot;     Final h(w) found is:&quot;, Mag_Squared_h_w_t_plus_1, end =&quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+            print(end = &quot;</span><span class="s5">\n</span><span class="s4">&quot;) 
+        &quot;&quot;&quot;</span>
+
+    <span class="s0">return </span><span class="s1">(Iteration_Indices_Vector, Loss_Values_Vector, current_weights)</span>
+
+<span class="s2">#Creates Plotted Data for a given X_Input and Y_Input, returns (fig, axs) if user wishes to re-access the graph in python</span>
+<span class="s0">def </span><span class="s1">plot_levenberg_marquardt(X_Input, y_Input, start_weights, lam, gamma, stop_threshold, stop_i, figure_title):</span>
+
+    <span class="s1">y = y_Input</span>
+    <span class="s2"># Different Values of Lambda</span>
+    <span class="s1">(f_x_i_Vals_lam1, f_x_Loss_Vals_lam1, Computed_Weights_lam1) = Compute_Levenberg_Marquardt_Data(X_Input, y, start_weights, lam, gamma, stop_threshold, stop_i)</span>
+    <span class="s1">(f_x_i_Vals_lam2, f_x_Loss_Vals_lam2, Computed_Weights_lam2) = Compute_Levenberg_Marquardt_Data(X_Input, y, start_weights, </span><span class="s3">0.1</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+    <span class="s1">(f_x_i_Vals_lam3, f_x_Loss_Vals_lam3, Computed_Weights_lam3) = Compute_Levenberg_Marquardt_Data(X_Input, y, start_weights, </span><span class="s3">1</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+    <span class="s1">(f_x_i_Vals_lam4, f_x_Loss_Vals_lam4, Computed_Weights_lam4) = Compute_Levenberg_Marquardt_Data(X_Input, y, start_weights, </span><span class="s3">10</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+
+    <span class="s2"># Different Values of Gamma</span>
+    <span class="s1">(f_x_i_Vals_gamma1, f_x_Loss_Vals_gamma1, Computed_Weights_gamma1) = Compute_Levenberg_Marquardt_Data(X_Input, y, start_weights, lam, </span><span class="s3">0.01</span><span class="s1">, stop_threshold, stop_i)</span>
+    <span class="s1">(f_x_i_Vals_gamma2, f_x_Loss_Vals_gamma2, Computed_Weights_gamma2) = Compute_Levenberg_Marquardt_Data(X_Input, y, start_weights, lam, </span><span class="s3">0.1</span><span class="s1">, stop_threshold, stop_i)</span>
+    <span class="s1">(f_x_i_Vals_gamma3, f_x_Loss_Vals_gamma3, Computed_Weights_gamma3) = Compute_Levenberg_Marquardt_Data(X_Input, y, start_weights, lam, gamma, stop_threshold, stop_i)</span>
+    <span class="s1">(f_x_i_Vals_gamma4, f_x_Loss_Vals_gamma4, Computed_Weights_gamma4) = Compute_Levenberg_Marquardt_Data(X_Input, y, start_weights, lam, </span><span class="s3">10</span><span class="s1">, stop_threshold, stop_i)</span>
+
+    <span class="s2"># Different Starting Weights</span>
+    <span class="s1">(f_x_i_Vals_weights1, f_x_Loss_Vals_weights1, Computed_Weights_weights1) = Compute_Levenberg_Marquardt_Data(X_Input, y, </span><span class="s3">2</span><span class="s1">*start_weights, lam, gamma, stop_threshold, stop_i)</span>
+    <span class="s1">(f_x_i_Vals_weights2, f_x_Loss_Vals_weights2, Computed_Weights_weights2) = Compute_Levenberg_Marquardt_Data(X_Input, y, </span><span class="s3">4</span><span class="s1">*start_weights, lam, gamma, stop_threshold, stop_i)</span>
+    <span class="s1">(f_x_i_Vals_weights3, f_x_Loss_Vals_weights3, Computed_Weights_weights3) = Compute_Levenberg_Marquardt_Data(X_Input, y, </span><span class="s3">6</span><span class="s1">*start_weights, lam, gamma, stop_threshold, stop_i)</span>
+    <span class="s1">(f_x_i_Vals_weights4, f_x_Loss_Vals_weights4, Computed_Weights_weights4) = Compute_Levenberg_Marquardt_Data(X_Input, y, </span><span class="s3">8</span><span class="s1">*start_weights, lam, gamma, stop_threshold, stop_i)</span>
+
+    <span class="s2">#Truncate elements for plotting if they exceed 80 elements</span>
+    <span class="s1">f_x_i_Vals_lam1 = f_x_i_Vals_lam1[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_lam2 = f_x_i_Vals_lam2[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_lam3 = f_x_i_Vals_lam3[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_lam4 = f_x_i_Vals_lam4[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_Loss_Vals_lam1 = f_x_Loss_Vals_lam1[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_Loss_Vals_lam2 = f_x_Loss_Vals_lam2[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_Loss_Vals_lam3 = f_x_Loss_Vals_lam3[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_Loss_Vals_lam4 = f_x_Loss_Vals_lam4[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_gamma1 = f_x_i_Vals_gamma1[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_gamma2 = f_x_i_Vals_gamma2[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_gamma3 = f_x_i_Vals_gamma3[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_gamma4 = f_x_i_Vals_gamma4[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_weights1 = f_x_i_Vals_weights1[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_weights2 = f_x_i_Vals_weights2[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_weights3 = f_x_i_Vals_weights3[:</span><span class="s3">80</span><span class="s1">]</span>
+    <span class="s1">f_x_i_Vals_weights4 = f_x_i_Vals_weights4[:</span><span class="s3">80</span><span class="s1">]</span>
+
+    <span class="s2"># Create a unique figure with 3 subplots</span>
+    <span class="s1">fig, axs = plt.subplots(</span><span class="s3">3</span><span class="s1">, </span><span class="s3">1</span><span class="s1">, figsize=(</span><span class="s3">10</span><span class="s1">, </span><span class="s3">20</span><span class="s1">))</span>
+
+    <span class="s2"># Subplot 1: Different Values of Lambda</span>
+    <span class="s1">axs[</span><span class="s3">0</span><span class="s1">].plot(f_x_i_Vals_lam1, f_x_Loss_Vals_lam1, color=</span><span class="s4">'red'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'λ = 10^(-5)'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">0</span><span class="s1">].plot(f_x_i_Vals_lam2, f_x_Loss_Vals_lam2, color=</span><span class="s4">'orange'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'λ = 0.1'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">0</span><span class="s1">].plot(f_x_i_Vals_lam3, f_x_Loss_Vals_lam3, color=</span><span class="s4">'green'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'λ = 1'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">0</span><span class="s1">].plot(f_x_i_Vals_lam4, f_x_Loss_Vals_lam4, color=</span><span class="s4">'blue'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'λ = 10'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">0</span><span class="s1">].set_xlabel(</span><span class="s4">&quot;Iteration Number&quot;</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">0</span><span class="s1">].set_ylabel(</span><span class="s4">&quot;Loss Magnitude&quot;</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">0</span><span class="s1">].set_title(</span><span class="s4">&quot;Loss vs Iterations for Different λ Values&quot;</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">0</span><span class="s1">].legend()</span>
+    <span class="s1">axs[</span><span class="s3">0</span><span class="s1">].grid(</span><span class="s0">True</span><span class="s1">)</span>
+
+    <span class="s2"># Subplot 2: Different Values of Gamma</span>
+    <span class="s1">axs[</span><span class="s3">1</span><span class="s1">].plot(f_x_i_Vals_gamma1, f_x_Loss_Vals_gamma1, color=</span><span class="s4">'red'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'γ = 0.01'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">1</span><span class="s1">].plot(f_x_i_Vals_gamma2, f_x_Loss_Vals_gamma2, color=</span><span class="s4">'orange'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'γ = 0.1'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">1</span><span class="s1">].plot(f_x_i_Vals_gamma3, f_x_Loss_Vals_gamma3, color=</span><span class="s4">'green'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'γ = 1'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">1</span><span class="s1">].plot(f_x_i_Vals_gamma4, f_x_Loss_Vals_gamma4, color=</span><span class="s4">'blue'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'γ = 10'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">1</span><span class="s1">].set_xlabel(</span><span class="s4">&quot;Iteration Number&quot;</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">1</span><span class="s1">].set_ylabel(</span><span class="s4">&quot;Loss Magnitude&quot;</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">1</span><span class="s1">].set_title(</span><span class="s4">&quot;Loss vs Iterations for Different γ Values&quot;</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">1</span><span class="s1">].legend()</span>
+    <span class="s1">axs[</span><span class="s3">1</span><span class="s1">].grid(</span><span class="s0">True</span><span class="s1">)</span>
+
+    <span class="s2"># Subplot 3: Different Starting Weights</span>
+    <span class="s1">axs[</span><span class="s3">2</span><span class="s1">].plot(f_x_i_Vals_weights1, f_x_Loss_Vals_weights1, color=</span><span class="s4">'red'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'Weights = 2*ones((16,1))'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">2</span><span class="s1">].plot(f_x_i_Vals_weights2, f_x_Loss_Vals_weights2, color=</span><span class="s4">'orange'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'Weights = 4*ones((16,1))'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">2</span><span class="s1">].plot(f_x_i_Vals_weights3, f_x_Loss_Vals_weights3, color=</span><span class="s4">'green'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'Weights = 6*ones((16,1))'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">2</span><span class="s1">].plot(f_x_i_Vals_weights4, f_x_Loss_Vals_weights4, color=</span><span class="s4">'blue'</span><span class="s1">, marker=</span><span class="s4">'o'</span><span class="s1">, label=</span><span class="s4">'Weights = 8*ones((16,1))'</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">2</span><span class="s1">].set_xlabel(</span><span class="s4">&quot;Iteration Number&quot;</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">2</span><span class="s1">].set_ylabel(</span><span class="s4">&quot;Loss Magnitude&quot;</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">2</span><span class="s1">].set_title(</span><span class="s4">&quot;Loss vs Iterations for Different Starting Weights&quot;</span><span class="s1">)</span>
+    <span class="s1">axs[</span><span class="s3">2</span><span class="s1">].legend()</span>
+    <span class="s1">axs[</span><span class="s3">2</span><span class="s1">].grid(</span><span class="s0">True</span><span class="s1">)</span>
+
+    <span class="s2"># Automatically adjust layout</span>
+    <span class="s1">plt.tight_layout(pad=</span><span class="s3">3.5</span><span class="s1">)  </span><span class="s2"># Add padding between subplots and figure edges</span>
+    <span class="s2"># Manually fine-tune spacing</span>
+    <span class="s1">plt.subplots_adjust(hspace=</span><span class="s3">0.6</span><span class="s1">, top = </span><span class="s3">0.88</span><span class="s1">, bottom = </span><span class="s3">0.15</span><span class="s1">)  </span><span class="s2"># Adjust spacing between subplots, top, and bottom</span>
+    <span class="s2"># Add Title</span>
+    <span class="s1">fig.suptitle(figure_title, fontsize = </span><span class="s3">25</span><span class="s1">, fontweight=</span><span class="s4">'bold'</span><span class="s1">, y=</span><span class="s3">0.95</span><span class="s1">)  </span><span class="s2"># Adjust title position</span>
+
+    <span class="s2"># Print last values of f_x_Loss_Vals</span>
+    <span class="s1">print(</span><span class="s4">f&quot;Last Loss Value for Different λ:&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  λ = 10^(-5): </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_lam1[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  λ = 0.1: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_lam2[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  λ = 1: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_lam3[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  λ = 10: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_lam4[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+    <span class="s1">print(</span><span class="s4">f&quot;Last Loss Value for Different γ:&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  γ = 0.01: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_gamma1[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  γ = 0.1: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_gamma2[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  γ = 1: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_gamma3[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  γ = 10: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_gamma4[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+    <span class="s1">print(</span><span class="s4">f&quot;Last Loss Value for Different Starting Weights:&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  Weights = 2*ones: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_weights1[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  Weights = 4*ones: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_weights2[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  Weights = 6*ones: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_weights3[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+    <span class="s1">print(</span><span class="s4">f&quot;  Weights = 8*ones: </span><span class="s5">{</span><span class="s1">f_x_Loss_Vals_weights4[-</span><span class="s3">1</span><span class="s1">]</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+    <span class="s0">return </span><span class="s1">fig, axs</span>
+
+<span class="s2">#Makes a custom Random rowsxN Input Matrix, by taking in scalars rows, N, and T(upper and lower bound for random variables)</span>
+<span class="s0">def </span><span class="s1">Custom_Random_Matrix_Maker(rows, N, T):</span>
+    <span class="s1">X = np.random.uniform(low=-T, high=T, size=(rows, N))</span>
+
+    <span class="s0">return </span><span class="s1">X</span>
+
+<span class="s2">#returns a 1xN test y vector where each y_i = f(x_i), with f(x) being my custom nonlinear function which dots an x input by itself</span>
+<span class="s0">def </span><span class="s1">f(x_full):</span>
+    <span class="s1">N = x_full.shape[</span><span class="s3">1</span><span class="s1">]</span>
+
+    <span class="s1">y = zeros((N,</span><span class="s3">1</span><span class="s1">))</span>
+    <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range (</span><span class="s3">0</span><span class="s1">, N):</span>
+        <span class="s1">y[i,</span><span class="s3">0</span><span class="s1">] = x_full[</span><span class="s3">0</span><span class="s1">,i]**</span><span class="s3">2 </span><span class="s1">+ x_full[</span><span class="s3">1</span><span class="s1">,i]**</span><span class="s3">2 </span><span class="s1">+ x_full[</span><span class="s3">2</span><span class="s1">,i]**</span><span class="s3">2</span>
+
+    <span class="s0">return </span><span class="s1">y</span>
+
+<span class="s2">#returns a 1xN y vector where each y_i = g(x_i) with g(x) being the nonlinear function givin in our Mini project</span>
+<span class="s0">def </span><span class="s1">g(x_full):</span>
+    <span class="s1">N = x_full.shape[</span><span class="s3">1</span><span class="s1">]</span>
+
+    <span class="s1">y = zeros((N,</span><span class="s3">1</span><span class="s1">))</span>
+    <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range (</span><span class="s3">0</span><span class="s1">, N):</span>
+        <span class="s1">y[i,</span><span class="s3">0</span><span class="s1">] = x_full[</span><span class="s3">0</span><span class="s1">,i]*x_full[</span><span class="s3">1</span><span class="s1">,i] + x_full[</span><span class="s3">2</span><span class="s1">,i]</span>
+
+    <span class="s0">return </span><span class="s1">y</span>
+
+<span class="s2">#returns a 1xN y vector where each y_i = g_noisy(x_i), with g_noisy(x_i) being our g(x) function with a specified added noise E</span>
+<span class="s0">def </span><span class="s1">g_noisy(x_full,E):</span>
+    <span class="s1">N = x_full.shape[</span><span class="s3">1</span><span class="s1">]</span>
+
+    <span class="s1">y = zeros((N,</span><span class="s3">1</span><span class="s1">))</span>
+    <span class="s0">for </span><span class="s1">i </span><span class="s0">in </span><span class="s1">range (</span><span class="s3">0</span><span class="s1">, N):</span>
+        <span class="s1">y[i,</span><span class="s3">0</span><span class="s1">] = x_full[</span><span class="s3">0</span><span class="s1">,i]*x_full[</span><span class="s3">1</span><span class="s1">,i] + x_full[</span><span class="s3">2</span><span class="s1">,i] + np.random.uniform(-E, E)</span>
+
+    <span class="s0">return </span><span class="s1">y</span>
+
+<span class="s2">#Old Way to generate Data</span>
+<span class="s4">&quot;&quot;&quot; 
+#3x500 Matrix Maker 
+X_3x500 = Custom_Random_Matrix_Maker(3, 500, 1) 
+ 
+#3x100 Matrix Maker 
+X_3x100_01 = Custom_Random_Matrix_Maker(3, 100, 0.1) 
+X_3x100_05 = Custom_Random_Matrix_Maker(3, 100, 0.5) 
+X_3x100_1 = Custom_Random_Matrix_Maker(3, 100, 1) 
+X_3x100_10 = Custom_Random_Matrix_Maker(3, 100, 10) 
+ 
+#g(x) y values 
+y_g_x = g(X_3x500) 
+ 
+#f(x) y values 
+y_f_x = f(X_3x500) 
+ 
+#Noise values for g(x) 
+y_noisy01 = g_noisy(X_3x500,0.1) 
+y_noisy1 = g_noisy(X_3x500,1) 
+y_noisy5 = g_noisy(X_3x500,5) 
+y_noisy10 = g_noisy(X_3x500,10) 
+&quot;&quot;&quot;</span>
+
+<span class="s2">#New Pickle Way</span>
+<span class="s2"># Get the current working directory</span>
+<span class="s1">current_project_path = os.getcwd()</span>
+<span class="s2"># Print the path</span>
+<span class="s1">print(</span><span class="s4">f&quot;The current Python project path is: </span><span class="s5">{</span><span class="s1">current_project_path</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Pickle Storage for data</span>
+<span class="s1">pickle_file_path = </span><span class="s4">&quot;MyData.pkl&quot;</span>
+<span class="s2"># Save Generated Data as a plickle File</span>
+<span class="s2">#Comment out this code block in order to store the values of the current iteration's testing data (But make sure to move your current test data to a different directory)</span>
+
+<span class="s0">with </span><span class="s1">open(</span><span class="s4">&quot;MyData.pkl&quot;</span><span class="s1">, </span><span class="s4">&quot;wb&quot;</span><span class="s1">) </span><span class="s0">as </span><span class="s1">file:</span>
+
+    <span class="s2">#3x500 Matrix Maker</span>
+    <span class="s1">X_3x500 = Custom_Random_Matrix_Maker(</span><span class="s3">3</span><span class="s1">, </span><span class="s3">500</span><span class="s1">, </span><span class="s3">1</span><span class="s1">)</span>
+
+    <span class="s2">#3x100 Matrix Maker</span>
+    <span class="s1">X_3x100_01 = Custom_Random_Matrix_Maker(</span><span class="s3">3</span><span class="s1">, </span><span class="s3">100</span><span class="s1">, </span><span class="s3">0.1</span><span class="s1">)</span>
+    <span class="s1">X_3x100_05 = Custom_Random_Matrix_Maker(</span><span class="s3">3</span><span class="s1">, </span><span class="s3">100</span><span class="s1">, </span><span class="s3">0.5</span><span class="s1">)</span>
+    <span class="s1">X_3x100_1 = Custom_Random_Matrix_Maker(</span><span class="s3">3</span><span class="s1">, </span><span class="s3">100</span><span class="s1">, </span><span class="s3">1</span><span class="s1">)</span>
+    <span class="s1">X_3x100_10 = Custom_Random_Matrix_Maker(</span><span class="s3">3</span><span class="s1">, </span><span class="s3">100</span><span class="s1">, </span><span class="s3">10</span><span class="s1">)</span>
+
+    <span class="s2">#g(x) y values</span>
+    <span class="s1">y_g_x = g(X_3x500)</span>
+
+    <span class="s2">#f(x) y values</span>
+    <span class="s1">y_f_x = f(X_3x500)</span>
+
+    <span class="s2">#Noise values for g(x)</span>
+    <span class="s1">y_noisy01 = g_noisy(X_3x500,</span><span class="s3">0.1</span><span class="s1">)</span>
+    <span class="s1">y_noisy1 = g_noisy(X_3x500,</span><span class="s3">1</span><span class="s1">)</span>
+    <span class="s1">y_noisy5 = g_noisy(X_3x500,</span><span class="s3">5</span><span class="s1">)</span>
+    <span class="s1">y_noisy10 = g_noisy(X_3x500,</span><span class="s3">10</span><span class="s1">)</span>
+
+    <span class="s1">pickle.dump({</span>
+        <span class="s4">&quot;X_3x500&quot;</span><span class="s1">: X_3x500,</span>
+        <span class="s4">&quot;X_3x100_01&quot;</span><span class="s1">: X_3x100_01,</span>
+        <span class="s4">&quot;X_3x100_05&quot;</span><span class="s1">: X_3x100_05,</span>
+        <span class="s4">&quot;X_3x100_1&quot;</span><span class="s1">: X_3x100_1,</span>
+        <span class="s4">&quot;X_3x100_10&quot;</span><span class="s1">: X_3x100_10,</span>
+        <span class="s4">&quot;y_g_x&quot;</span><span class="s1">: y_g_x,</span>
+        <span class="s4">&quot;y_f_x&quot;</span><span class="s1">: y_f_x,</span>
+        <span class="s4">&quot;y_noisy01&quot;</span><span class="s1">: y_noisy01,</span>
+        <span class="s4">&quot;y_noisy1&quot;</span><span class="s1">: y_noisy1,</span>
+        <span class="s4">&quot;y_noisy5&quot;</span><span class="s1">: y_noisy5,</span>
+        <span class="s4">&quot;y_noisy10&quot;</span><span class="s1">: y_noisy10</span>
+    <span class="s1">}, file)</span>
+
+
+<span class="s2"># Load all vectors from the pickle file</span>
+<span class="s0">with </span><span class="s1">open(pickle_file_path, </span><span class="s4">&quot;rb&quot;</span><span class="s1">) </span><span class="s0">as </span><span class="s1">file:</span>
+    <span class="s1">MyData = pickle.load(file)</span>
+
+<span class="s2"># Convert dictionary keys into global variables</span>
+<span class="s0">for </span><span class="s1">key, value </span><span class="s0">in </span><span class="s1">MyData.items():</span>
+    <span class="s1">globals()[key] = value</span>
+
+
+<span class="s2">#Default Initialization</span>
+<span class="s1">start_weights = np.ones((</span><span class="s3">16</span><span class="s1">,</span><span class="s3">1</span><span class="s1">))</span>
+<span class="s1">lam = </span><span class="s3">10</span><span class="s1">**-</span><span class="s3">5</span>
+<span class="s1">gamma = </span><span class="s3">1</span>
+<span class="s1">stop_threshold = </span><span class="s3">10000</span>
+<span class="s1">stop_i = </span><span class="s3">1000</span>
+
+<span class="s2"># Task 3a</span>
+<span class="s1">print(</span><span class="s4">&quot;Task 3a</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">(fig1, axs1) = plot_levenberg_marquardt(X_3x500, y_g_x, start_weights, lam, gamma, stop_threshold, stop_i, </span><span class="s4">&quot;Training Loss Values For g(x)&quot;</span><span class="s1">)</span>
+
+<span class="s2">#Task 3b</span>
+<span class="s1">print(</span><span class="s4">&quot;</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">&quot;Task 3b</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s1">print(</span><span class="s4">&quot;Different Lambdas, and T Values</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">(I_b1, X_b1, w_b1) = Compute_Levenberg_Marquardt_Data(X_3x500, y_g_x, start_weights, </span><span class="s3">0.5</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_b1_2, X_b1_2, w_b1_2) = Compute_Levenberg_Marquardt_Data(X_3x500, y_g_x, start_weights, </span><span class="s3">1</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_b2, X_b2, w_b2) = Compute_Levenberg_Marquardt_Data(X_3x500, y_g_x, start_weights, </span><span class="s3">2</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_b2_2, X_b2_2, w_b2_2) = Compute_Levenberg_Marquardt_Data(X_3x500, y_g_x, start_weights, </span><span class="s3">5</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+
+<span class="s1">print(</span><span class="s4">f&quot;Training RMSE values for different λ&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_b1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_b1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 2: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_b2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_b2_2)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print Testing RMSE results for λ = 0.5</span>
+<span class="s1">print(</span><span class="s4">f&quot;Testing RMSE values for λ = 0.5 and T = [0.1, 0.5, 1, 10]:&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_01), X_3x100_01, w_b1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_05), X_3x100_05, w_b1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_b1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_10), X_3x100_10, w_b1)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print Testing RMSE results for λ = 1</span>
+<span class="s1">print(</span><span class="s4">f&quot;Testing RMSE values for λ = 1 and T = [0.1, 0.5, 1, 10]:&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_01), X_3x100_01, w_b1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_05), X_3x100_05, w_b1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_b1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_10), X_3x100_10, w_b1_2)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print Testing RMSE results for λ = 2</span>
+<span class="s1">print(</span><span class="s4">f&quot;Testing RMSE values for λ = 2 and T = [0.1, 0.5, 1, 10]:&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_01), X_3x100_01, w_b2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_05), X_3x100_05, w_b2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_b2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_10), X_3x100_10, w_b2)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print Testing RMSE results for λ = 5</span>
+<span class="s1">print(</span><span class="s4">f&quot;</span><span class="s5">\n</span><span class="s4">Testing RMSE values for λ = 5 and T = [0.1, 0.5, 1, 10]:&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_01), X_3x100_01, w_b2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_05), X_3x100_05, w_b2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_b2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_10), X_3x100_10, w_b2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">&quot;</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2">#Task 3c</span>
+
+<span class="s1">print(</span><span class="s4">&quot;Task 3c</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">&quot;Task 3c_a&quot;</span><span class="s1">)</span>
+<span class="s1">(fig2, axs2) = plot_levenberg_marquardt(X_3x500, y_f_x, start_weights, lam, gamma, stop_threshold, stop_i, </span><span class="s4">&quot;Training Loss Values For f(x)&quot;</span><span class="s1">)</span>
+
+<span class="s1">print(</span><span class="s4">&quot;Task 3c_b&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">&quot;Different Lambdas, and T Values for f(x)&quot;</span><span class="s1">)</span>
+<span class="s1">(I_c1, X_c1, w_c1) = Compute_Levenberg_Marquardt_Data(X_3x500, y_f_x, start_weights, </span><span class="s3">0.5</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_c1_2, X_c1_2, w_c1_2) = Compute_Levenberg_Marquardt_Data(X_3x500, y_f_x, start_weights, </span><span class="s3">1</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_c2, X_c2, w_c2) = Compute_Levenberg_Marquardt_Data(X_3x500, y_f_x, start_weights, </span><span class="s3">2</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_c2_2, X_c2_2, w_c2_2) = Compute_Levenberg_Marquardt_Data(X_3x500, y_f_x, start_weights, </span><span class="s3">5</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+
+<span class="s1">print(</span><span class="s4">f&quot;</span><span class="s5">\n</span><span class="s4">Training RMSE values for different λ&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x500), X_3x500, w_c1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 1: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x500), X_3x500, w_c1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 2: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x500), X_3x500, w_c2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 5: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x500), X_3x500, w_c2_2)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print RMSE results for λ = 0.5</span>
+<span class="s1">print(</span><span class="s4">f&quot;</span><span class="s5">\n</span><span class="s4">Testing RMSE values for λ = 0.5 and T = [0.1, 0.5, 1, 10]:&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_01), X_3x100_01, w_c1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_05), X_3x100_05, w_c1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_1), X_3x100_1, w_c1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_10), X_3x100_10, w_c1)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print RMSE results for λ = 1</span>
+<span class="s1">print(</span><span class="s4">f&quot;</span><span class="s5">\n</span><span class="s4">Testing RMSE values for λ = 1 and T = [0.1, 0.5, 1, 10]:&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_01), X_3x100_01, w_c1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_05), X_3x100_05, w_c1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_1), X_3x100_1, w_c1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_10), X_3x100_10, w_c1_2)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print RMSE results for λ = 2</span>
+<span class="s1">print(</span><span class="s4">f&quot;</span><span class="s5">\n</span><span class="s4">Testing RMSE values for λ = 2 and T = [0.1, 0.5, 1, 10]:&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_01), X_3x100_01, w_c2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_05), X_3x100_05, w_c2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_1), X_3x100_1, w_c2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_10), X_3x100_10, w_c2)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print RMSE results for λ = 5</span>
+<span class="s1">print(</span><span class="s4">f&quot;</span><span class="s5">\n</span><span class="s4">Testing RMSE values for λ = 5 and T = [0.1, 0.5, 1, 10]:&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_01), X_3x100_01, w_c2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_05), X_3x100_05, w_c2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_1), X_3x100_1, w_c2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(f(X_3x100_10), X_3x100_10, w_c2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">&quot;</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s2">#Task 3d</span>
+<span class="s1">print(</span><span class="s4">&quot;Task 3d</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s1">print(</span><span class="s4">&quot;Task 3d_a&quot;</span><span class="s1">)</span>
+<span class="s1">(fig3, axs3) = plot_levenberg_marquardt(X_3x500, y_noisy1, start_weights, lam, gamma, stop_threshold, stop_i, </span><span class="s4">&quot;Training Loss Values For g(x) with noise E = 1&quot;</span><span class="s1">)</span>
+
+<span class="s1">print(</span><span class="s4">&quot;Task 3d_b</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">&quot;Different Lambdas, and T Values for g(x)&quot;</span><span class="s1">)</span>
+<span class="s1">(I_d1, X_d1, w_d1) = Compute_Levenberg_Marquardt_Data(X_3x500, y_noisy1, start_weights, </span><span class="s3">0.5</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_d1_2, X_d1_2, w_d1_2) = Compute_Levenberg_Marquardt_Data(X_3x500, y_noisy1, start_weights, </span><span class="s3">1</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_d2, X_d2, w_d2) = Compute_Levenberg_Marquardt_Data(X_3x500, y_noisy1, start_weights, </span><span class="s3">2</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_d2_2, X_d2_2, w_d2_2) = Compute_Levenberg_Marquardt_Data(X_3x500, y_noisy1, start_weights, </span><span class="s3">5</span><span class="s1">, gamma, stop_threshold, stop_i)</span>
+
+<span class="s1">print(</span><span class="s4">f&quot;Training RMSE values for different λ&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_d1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_d1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 2: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_d2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  λ = 5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_d2_2)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print RMSE results for λ = 0.5</span>
+<span class="s1">print(</span><span class="s4">f&quot;</span><span class="s5">\n</span><span class="s4">Testing RMSE values for λ = 0.5 and T = [0.1, 0.5, 1, 10] for g(x):&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_01), X_3x100_01, w_d1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_05), X_3x100_05, w_d1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_d1)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_10), X_3x100_10, w_d1)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print RMSE results for λ = 1</span>
+<span class="s1">print(</span><span class="s4">f&quot;</span><span class="s5">\n</span><span class="s4">Testing RMSE values for λ = 1 and T = [0.1, 0.5, 1, 10] for g(x):&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_01), X_3x100_01, w_d1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_05), X_3x100_05, w_d1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_d1_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_10), X_3x100_10, w_d1_2)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print RMSE results for λ = 2</span>
+<span class="s1">print(</span><span class="s4">f&quot;</span><span class="s5">\n</span><span class="s4">Testing RMSE values for λ = 2 and T = [0.1, 0.5, 1, 10] for g(x):&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_01), X_3x100_01, w_d2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_05), X_3x100_05, w_d2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_d2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_10), X_3x100_10, w_d2)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Print RMSE results for λ = 5</span>
+<span class="s1">print(</span><span class="s4">f&quot;</span><span class="s5">\n</span><span class="s4">Testing RMSE values for λ = 5 and T = [0.1, 0.5, 1, 10] for g(x):&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_01), X_3x100_01, w_d2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 0.5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_05), X_3x100_05, w_d2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_d2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  T = 10: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_10), X_3x100_10, w_d2_2)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">&quot;</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+
+<span class="s1">print(</span><span class="s4">&quot;Task 3d_Different noise levels</span><span class="s5">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">&quot;Training and Test Errors for Different Noise Levels&quot;</span><span class="s1">)</span>
+<span class="s1">(I_d3, X_d3, w_d3) = Compute_Levenberg_Marquardt_Data(X_3x500, y_noisy01, start_weights, lam, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_d4, X_d4, w_d4) = Compute_Levenberg_Marquardt_Data(X_3x500, y_noisy1, start_weights, lam, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_d5, X_d5, w_d5) = Compute_Levenberg_Marquardt_Data(X_3x500, y_noisy5, start_weights, lam, gamma, stop_threshold, stop_i)</span>
+<span class="s1">(I_d6, X_d6, w_d6) = Compute_Levenberg_Marquardt_Data(X_3x500, y_noisy10, start_weights, lam, gamma, stop_threshold, stop_i)</span>
+
+<span class="s1">print(</span><span class="s4">&quot;Training and Test Errors for Different Noise Levels:&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Training Errors (Last Loss Values)</span>
+<span class="s1">print(</span><span class="s4">&quot;Training Errors for different Noise Values:&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  Noise Level ε = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_d3)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  Noise Level ε = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_d4)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  Noise Level ε = 5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_d5)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  Noise Level ε = 10: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x500), X_3x500, w_d6)</span><span class="s5">}\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Test Errors (RMSE)</span>
+<span class="s1">print(</span><span class="s4">&quot;Test Errors for different Noise Values:&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  Noise Level ε = 0.1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_d3)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  Noise Level ε = 1: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_d4)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  Noise Level ε = 5: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_d5)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">f&quot;  Noise Level ε = 10: </span><span class="s5">{</span><span class="s1">RMSE(g(X_3x100_1), X_3x100_1, w_d6)</span><span class="s5">}</span><span class="s4">&quot;</span><span class="s1">)</span>
+
+<span class="s1">plt.show()</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre>
+</body>
+</html>
